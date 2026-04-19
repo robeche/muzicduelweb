@@ -57,7 +57,7 @@ export function getTotalSongsFiltered(songs: Song[], styles: MusicStyle[], yearR
 }
 
 export function getYearRange(songs: Song[]): [number, number] {
-  if (songs.length === 0) return [1950, 2025];
+  if (songs.length === 0) return [1960, 2025];
   
   let min = Infinity;
   let max = -Infinity;
@@ -66,6 +66,10 @@ export function getYearRange(songs: Song[]): [number, number] {
     if (song.year < min) min = song.year;
     if (song.year > max) max = song.year;
   }
+  
+  // Limitar el rango mínimo a 1960 según las reglas del juego
+  min = Math.max(min, 1960);
+  max = Math.min(max, 2025);
   
   return [min, max];
 }

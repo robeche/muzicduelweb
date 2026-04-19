@@ -6,13 +6,14 @@ import { loadSongs, filterSongs, getRandomSongExcluding, getStyleStatsForYearRan
 import { StyleSelector } from "@/components/StyleSelector";
 import { YearRangeSlider } from "@/components/YearRangeSlider";
 import { SongPlayer } from "@/components/SongPlayer";
+import { GameInstructions } from "@/components/GameInstructions";
 
 export default function Home() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [styleStats, setStyleStats] = useState<Record<string, number>>({});
-  const [globalYearRange, setGlobalYearRange] = useState<[number, number]>([1950, 2025]);
-  const [yearRange, setYearRange] = useState<[number, number]>([1950, 2025]);
+  const [globalYearRange, setGlobalYearRange] = useState<[number, number]>([1960, 2025]);
+  const [yearRange, setYearRange] = useState<[number, number]>([1960, 2025]);
   
   const [selectedStyles, setSelectedStyles] = useState<MusicStyle[]>([]);
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
@@ -123,11 +124,14 @@ export default function Home() {
           <p className="text-slate-400 text-lg">
             Escucha canciones y adivina el año de lanzamiento
           </p>
-          {songs.length > 0 && (
-            <p className="text-slate-500 text-sm mt-2">
-              {songs.length} canciones disponibles
-            </p>
-          )}
+          <div className="flex items-center justify-center gap-4 mt-3">
+            {songs.length > 0 && (
+              <p className="text-slate-500 text-sm">
+                {songs.length} canciones disponibles
+              </p>
+            )}
+            <GameInstructions />
+          </div>
         </header>
 
         {/* Game area */}

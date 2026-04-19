@@ -127,12 +127,13 @@ export function YearRangeSlider({
       {/* Quick presets */}
       <div className="flex flex-wrap gap-2 mt-4">
         {[
-          { label: "50s-60s", range: [1950, 1969] as [number, number] },
+          { label: "60s", range: [1960, 1969] as [number, number] },
           { label: "70s", range: [1970, 1979] as [number, number] },
           { label: "80s", range: [1980, 1989] as [number, number] },
           { label: "90s", range: [1990, 1999] as [number, number] },
           { label: "2000s", range: [2000, 2009] as [number, number] },
-          { label: "2010s+", range: [2010, maxYear] as [number, number] },
+          { label: "2010s", range: [2010, 2019] as [number, number] },
+          { label: "2020s", range: [2020, maxYear] as [number, number] },
           { label: "Todos", range: [minYear, maxYear] as [number, number] },
         ].map(({ label, range }) => (
           <button
