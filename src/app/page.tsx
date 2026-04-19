@@ -2,14 +2,17 @@
 
 import { useEffect, useState, useCallback } from "react";
 import type { Song, MusicStyle } from "@/types";
-import { loadSongs, filterSongsByStyles, getRandomSongExcluding, getStyleStats, getTotalSongsForStyles } from "@/lib/songs";
+import { loadSongs, filterSongs, getRandomSongExcluding, getStyleStatsForYearRange, getTotalSongsFiltered, getYearRange } from "@/lib/songs";
 import { StyleSelector } from "@/components/StyleSelector";
+import { YearRangeSlider } from "@/components/YearRangeSlider";
 import { SongPlayer } from "@/components/SongPlayer";
 
 export default function Home() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [styleStats, setStyleStats] = useState<Record<string, number>>({});
+  const [globalYearRange, setGlobalYearRange] = useState<[number, number]>([1950, 2025]);
+  const [yearRange, setYearRange] = useState<[number, number]>([1950, 2025]);
   
   const [selectedStyles, setSelectedStyles] = useState<MusicStyle[]>([]);
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
@@ -22,17 +25,27 @@ export default function Home() {
     loadSongs()
       .then((data) => {
         setSongs(data);
-        setStyleStats(getStyleStats(data));
+        const range = getYearRange(data);
+        setGlobalYearRange(range);
+        setYearRange(range);
+        setStyleStats(getStyleStatsForYearRange(data, range));
       })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
+  // Update style stats when year range changes
+  useEffect(() => {
+    if (songs.length > 0) {
+      setStyleStats(getStyleStatsForYearRange(songs, yearRange));
+    }
+  }, [songs, yearRange]);
+
   // Pick a new song when style changes
   const pickNewSong = useCallback(() => {
     if (selectedStyles.length === 0 || songs.length === 0) return;
     
-    const styleSongs = filterSongsByStyles(songs, selectedStyles);
+    const styleSongs = filterSongs(songs, selectedStyles, yearRange);
     const newSong = getRandomSongExcluding(styleSongs, playedSongs);
     
     if (newSong) {
@@ -49,7 +62,7 @@ export default function Home() {
         setPlayedSongs(new Set([freshSong.youtubeId]));
       }
     }
-  }, [selectedStyles, songs, playedSongs]);
+  }, [selectedStyles, songs, playedSongs, yearRange]);
 
   const handleToggleStyle = (style: MusicStyle) => {
     setSelectedStyles((prev) => {
@@ -58,6 +71,10 @@ export default function Home() {
       }
       return [...prev, style];
     });
+  };
+
+  const handleYearRangeChange = (range: [number, number]) => {
+    setYearRange(range);
   };
 
   const handleStartPlaying = () => {
@@ -81,7 +98,8 @@ export default function Home() {
     setGameStarted(false);
   };
 
-  const totalAvailableSongs = getTotalSongsForStyles(songs, selectedStyles);
+  const totalAvailableSongs = getTotalSongsFiltered(songs, selectedStyles, yearRange);
+  const songsInYearRange = getTotalSongsFiltered(songs, selectedStyles.length > 0 ? selectedStyles : [], yearRange);
 
   if (loading) {
     return (
@@ -116,6 +134,17 @@ export default function Home() {
         {!gameStarted ? (
           // Style selection
           <section className="glass-card p-6 sm:p-8">
+            {/* Year Range Filter */}
+            <div className="mb-8 pb-6 border-b border-white/10">
+              <YearRangeSlider
+                minYear={globalYearRange[0]}
+                maxYear={globalYearRange[1]}
+                yearRange={yearRange}
+                onRangeChange={handleYearRangeChange}
+                songCount={songsInYearRange}
+              />
+            </div>
+
             <h2 className="text-xl font-semibold text-white mb-2">
               Elige los estilos musicales
             </h2>
