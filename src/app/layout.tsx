@@ -1,0 +1,21 @@
+import type { Metadata } from "next";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "MuzicDuel - Juego Musical",
+  description: "Adivina el año de lanzamiento de canciones por estilo musical",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="es">
+      <body className="antialiased min-h-screen">
+        {children}
+      </body>
+    </html>
+  );
+}

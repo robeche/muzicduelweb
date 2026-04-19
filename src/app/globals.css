@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* QR Code styling */
+.qr-container {
+  @apply bg-white p-4 rounded-2xl shadow-lg;
+}
+
+/* Glass effect cards */
+.glass-card {
+  @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md;
+}
+
+/* Style selector button */
+.style-button {
+  @apply px-4 py-3 rounded-xl border transition-all duration-200;
+}
+
+.style-button.inactive {
+  @apply border-white/10 bg-slate-900/50 text-slate-300 hover:bg-slate-800/50 hover:border-white/20;
+}
+
+.style-button.active {
+  @apply border-cyan-400 bg-cyan-400/20 text-cyan-100 shadow-lg shadow-cyan-400/20;
+}
+
+/* Play button animation */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.play-button::before {
+  content: '';
+  @apply absolute inset-0 rounded-full bg-green-500;
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+/* Skeleton loading */
+.skeleton {
+  @apply animate-pulse bg-slate-700/50 rounded;
+}
